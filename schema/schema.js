@@ -1,3 +1,12 @@
+/**
+ * Important note from Net Ninja:
+ * The fields inside BookType and AuthorType are both wrapped inside a function.
+ * Reason: BookType depends on AuthorType and vice versa. 
+ * The 'schema.js' is executed top-down while parsing. The dependend fields being wrapped inside
+ * functions makes sure that each of them are invoked only when the dependend types are known.
+ * 
+ */
+
 const graphql = require('graphql');
 const _ = require('lodash');
 
