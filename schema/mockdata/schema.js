@@ -10,12 +10,8 @@
 const graphql = require('graphql');
 const _ = require('lodash');
 
-const Book = require('../models/book');
-const Author = require('../models/author');
-
 const {
   GraphQLObjectType,
-  GraphQLInputObjectType,
   GraphQLID,
   GraphQLInt,
   GraphQLString,
@@ -23,6 +19,23 @@ const {
   GraphQLSchema
 } = graphql;
 
+// Some dummy data
+const books = [
+  { name: 'The Art of Loving', genre: 'Philosophy', id: '1', authorid: '1' },
+  { name: 'The Swarm', genre: 'Sci-Fi', id: '2', authorid: '2' },
+  { name: 'The Wandering Earth', genre: 'Sci-Fi', id: '3', authorid: '3' },
+  { name: 'Breaking News', genre: 'Krimi', id: '4', authorid: '2' },
+  { name: 'Die Tyrannei des Schmetterlings', genre: 'Krimi', id: '5', authorid: '2' },
+  { name: 'The Art of Being', genre: 'Philosophy', id: '6', authorid: '1' },
+  { name: 'The Art of Listening', genre: 'Philosophy', id: '7', authorid: '1' },
+  { name: 'The Three Body Problem', genre: 'Sci-Fi', id: '8', authorid: '3' }
+];
+
+const authors = [
+  { name: 'Erich Fromm', country:'Germany', rank:'1', id: '1' },
+  { name: 'Frank Schätzing', country:'Germany', rank:'22', id: '2' },
+  { name: 'Liu Cixin (劉慈欣)', country:'China', rank:'33', id: '3' }
+];
 
 const BookType = new GraphQLObjectType({
   name: 'Book',
@@ -33,7 +46,7 @@ const BookType = new GraphQLObjectType({
     author: {
       type: AuthorType,
       resolve(parent, args){
-        //return _.find(authors, {id: parent.authorid });
+        return _.find(authors, {id: parent.authorid });
       }
     }
   })
@@ -49,19 +62,10 @@ const AuthorType = new GraphQLObjectType({
     books: {
       type: new GraphQLList(BookType),
       resolve(parent, args){
-        //return _.filter( books, {authorid: parent.id} );
+        return _.filter( books, {authorid: parent.id} );
       }
     }
   })
-});
-
-const inputAuthorType = new GraphQLInputObjectType({
-  name: 'AuthorInput',
-  fields: {
-    name: { type: GraphQLString },
-    rank: { type: GraphQLInt },
-    country: { type: GraphQLString }
-  }
 });
 
 const RootQuery = new GraphQLObjectType({
@@ -77,66 +81,44 @@ const RootQuery = new GraphQLObjectType({
       }
     },
 
-    /*
-    The corresponding Query from Frontend looks like this:
-    query {
-      book(id: "1"){   // <-- Take care: This MUST be double-quotes in GraphiQL
-        name,
-        gernre
-      }
-    }
-    */
-
     author: {
       type: AuthorType,
       args: { id: { type: GraphQLID }},
       resolve(parent, args){
         // code to get data from database or other source
-        //return _.find(authors, { id: args.id });
+        return _.find(authors, { id: args.id });
       }
     },
 
     books: {
       type: new GraphQLList(BookType),
       resolve(parent, args){
-        //return books;
+        return books;
       }
     },
 
     authors: {
       type: new GraphQLList(BookType),
       resolve(parent, args){
-        //return authors;
+        return authors;
       }
     },
 
   }
 });
 
-// Writing to the MongoDB:
-const Mutation = new GraphQLObjectType({
-  name: 'Mutation',
-  fields: {
-    addAuthor: {
-      type: AuthorType,
-      args: {
-        input: {
-          type: inputAuthorType
-        },
-      },
-      resolve: function( parent, args ){
-        let author = new Author({
-          name: args.input.name,
-          rank: args.input.rank,
-          country: args.input.country
-        });
-        return author.save();
-      }
-    }
+// Remark:
+/*
+The corresponding Query from Frontend looks like this:
+query {
+  book(id: "1"){   // <-- Take care: This MUST be double-quotes in GraphiQL
+    name,
+    gernre
   }
-});
+}
+
+*/
 
 module.exports = new GraphQLSchema({
-  query: RootQuery, // <-- This tells us how we initially jump into the graph!
-  mutation: Mutation
+  query: RootQuery // <-- This tells us how we initially jump into the graph!
 });
