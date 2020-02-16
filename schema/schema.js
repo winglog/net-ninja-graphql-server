@@ -20,6 +20,7 @@ const {
   GraphQLInt,
   GraphQLString,
   GraphQLList,
+  GraphQLNonNull,
   GraphQLSchema
 } = graphql;
 
@@ -44,9 +45,9 @@ const BookType = new GraphQLObjectType({
 const inputBookType = new GraphQLInputObjectType({
   name: 'BookInput',
   fields: {
-    authorId: { type: GraphQLID },
-    name: { type: GraphQLString },
-    genre: { type: GraphQLString }
+    authorId: { type: new GraphQLNonNull(GraphQLID) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    genre: { type: new GraphQLNonNull(GraphQLString) }
   }
 });
 
@@ -70,9 +71,9 @@ const AuthorType = new GraphQLObjectType({
 const inputAuthorType = new GraphQLInputObjectType({
   name: 'AuthorInput',
   fields: {
-    name: { type: GraphQLString },
+    name: { type: new GraphQLNonNull(GraphQLString) },
     rank: { type: GraphQLInt },
-    country: { type: GraphQLString }
+    country: { type: new GraphQLNonNull(GraphQLString) }
   }
 });
 
