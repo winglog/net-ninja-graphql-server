@@ -1,8 +1,20 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
+const mongoose = require('mongoose');
+
 const schema = require('./schema/schema');
 
 const app = express();
+
+
+mongoose.connect('mongodb+srv://winglog:TestAdmin2020%23@maudachcluster-xclic.mongodb.net/test?retryWrites=true&w=majority', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+mongoose.connection.once('open', ()=>{
+  console.log('Connected to MaudachCluster on mlab');
+});
 
 app.use('/graphql', graphqlHTTP({
   schema: schema,
