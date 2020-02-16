@@ -6,6 +6,7 @@ const {
   GraphQLID,
   GraphQLInt,
   GraphQLString,
+  GraphQLList,
   GraphQLSchema
 } = graphql;
 
@@ -13,7 +14,12 @@ const {
 const books = [
   { name: 'The Art of Loving', genre: 'Philosophy', id: '1', authorid: '1' },
   { name: 'The Swarm', genre: 'Sci-Fi', id: '2', authorid: '2' },
-  { name: 'The Wandering Earth', genre: 'Sci-Fi', id: '3', authorid: '3' }
+  { name: 'The Wandering Earth', genre: 'Sci-Fi', id: '3', authorid: '3' },
+  { name: 'Breaking News', genre: 'Krimi', id: '4', authorid: '2' },
+  { name: 'Die Tyrannei des Schmetterlings', genre: 'Krimi', id: '5', authorid: '2' },
+  { name: 'The Art of Being', genre: 'Philosophy', id: '6', authorid: '1' },
+  { name: 'The Art of Listening', genre: 'Philosophy', id: '7', authorid: '1' },
+  { name: 'The Three Body Problem', genre: 'Sci-Fi', id: '8', authorid: '3' }
 ];
 
 const authors = [
@@ -43,7 +49,13 @@ const AuthorType = new GraphQLObjectType({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     rank: { type: GraphQLInt },
-    country: { type: GraphQLString }
+    country: { type: GraphQLString },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve(parent, args){
+        return _.filter( books, {authorid: parent.id} );
+      }
+    }
   })
 });
 
