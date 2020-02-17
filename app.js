@@ -1,11 +1,14 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const schema = require('./schema/schema');
 
 const app = express();
 
+// Allow cross-origin requests
+app.use(cors());
 
 mongoose.connect('mongodb+srv://winglog:TestAdmin2020%23@maudachcluster-xclic.mongodb.net/test?retryWrites=true&w=majority', {
   useNewUrlParser: true,
