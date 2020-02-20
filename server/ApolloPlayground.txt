@@ -1,0 +1,22 @@
+Query:
+
+query {
+  hello
+}
+
+
+Mutation:
+
+mutation {
+  login ( userInfo: {username:"Alpha", password:"Beta", age:13} ),
+  register( userInfo: {username:"Alpha", password:"Beta", age:13} ) {
+    user {
+      id
+      username
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
